@@ -168,7 +168,7 @@ jobs:
 
       - name: Scan current build with Trivy (for PRs)
         if: github.event_name == 'pull_request'
-        uses: aquasecurity/trivy-action@0.34.1
+        uses: aquasecurity/trivy-action@0.34.2
         with:
           scan-type: "fs"
           scan-ref: "${{ github.workspace }}/build/libs"
@@ -178,7 +178,7 @@ jobs:
 
       - name: Scan current build with Trivy (for manual/scheduled triggers)
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
-        uses: aquasecurity/trivy-action@0.34.1
+        uses: aquasecurity/trivy-action@0.34.2
         with:
           scan-type: "fs"
           scan-ref: "${{ github.workspace }}/build/libs"
@@ -189,7 +189,7 @@ jobs:
       - name: Scan baseline JAR with Trivy
         id: scan_baseline
         if: github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true'
-        uses: aquasecurity/trivy-action@0.34.1
+        uses: aquasecurity/trivy-action@0.34.2
         with:
           scan-type: "fs"
           scan-ref: "${{ github.workspace }}/baseline-jar"
@@ -202,7 +202,7 @@ jobs:
       - name: Scan current build with Trivy (JSON for comparison)
         id: scan_current
         if: github.event_name == 'pull_request'
-        uses: aquasecurity/trivy-action@0.34.1
+        uses: aquasecurity/trivy-action@0.34.2
         with:
           scan-type: "fs"
           scan-ref: "${{ github.workspace }}/build/libs"
