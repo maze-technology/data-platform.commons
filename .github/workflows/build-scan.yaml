@@ -325,7 +325,7 @@ jobs:
 
       - name: Comment on PR about existing vulnerabilities
         if: github.event_name == 'pull_request' && steps.vuln_eval.outputs.comparison_ran == 'true'
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: security-scan
           recreate: true
