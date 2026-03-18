@@ -60,7 +60,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Setup Coursier
-        uses: coursier/setup-action@v2
+        uses: coursier/setup-action@v3
 
       - name: Setup SmithyTranslate
         run: cs install --channel https://disneystreaming.github.io/coursier.json smithytranslate:${{ env.SMITHYTRANSLATE_VERSION }}
