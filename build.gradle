@@ -10,7 +10,7 @@ plugins {
 }
 
 ext {
-  junitVersion                = "6.0.3"
+  junitVersion                = "6.1.0"
   wiremockVersion             = "3.0.1"
   mapStructVersion            = "1.6.3"
   springBootVersion           = "4.0.6"
