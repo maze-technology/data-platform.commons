@@ -24,7 +24,7 @@ ext {
   lombokVersion               = "1.18.46"
   hikariCpVersion             = "7.0.2"
   h2Version                   = "2.4.240"
-  spotbugsVersion             = "4.9.8"
+  spotbugsVersion             = "4.10.1"
   googleCommonProtosVersion   = "2.72.0"
 }
 
