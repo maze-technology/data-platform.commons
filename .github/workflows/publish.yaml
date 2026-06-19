@@ -21,7 +21,7 @@ jobs:
     outputs:
       VERSION: ${{ steps.bump_version.outputs.new_tag }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Bump version and push tag
         id: bump_version
@@ -39,7 +39,7 @@ jobs:
       packages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
 
@@ -106,7 +106,7 @@ jobs:
             })
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
