@@ -158,11 +158,17 @@ jobs:
           GROUP_PATH="${{ steps.maven_coords.outputs.group_path }}"
           ARTIFACT="${{ steps.maven_coords.outputs.artifact }}"
           mkdir -p baseline-jar
-          # Download from GitHub Packages Maven repository
-          JAR_URL="https://maven.pkg.github.com/${{ github.repository }}/${GROUP_PATH}/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}.jar"
+          # Download from GitLab group Package Registry (data-platform)
+          JAR_URL="https://scm.maze.trading/api/v4/groups/6/-/packages/maven/${GROUP_PATH}/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}.jar"
           echo "Downloading JAR from: $JAR_URL"
-          # If baseline exists, download is required for vulnerability comparison
-          curl -L -f -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          # Prefer GITLAB_TOKEN / GITLAB_MAVEN_PASSWORD (Deploy Token); fall back to GITHUB_TOKEN only if unset
+          AUTH_TOKEN="${{ secrets.GITLAB_MAVEN_PASSWORD || secrets.GITLAB_TOKEN }}"
+          if [ -z "$AUTH_TOKEN" ]; then
+            echo "No GITLAB_MAVEN_PASSWORD/GITLAB_TOKEN secret; skipping baseline download"
+            echo "has_baseline=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          curl -L -f -u "${{ secrets.GITLAB_MAVEN_USER || 'gitlab-ci-token' }}:${AUTH_TOKEN}" \
             -o baseline-jar/${ARTIFACT}-${VERSION}.jar \
             "$JAR_URL"
 
