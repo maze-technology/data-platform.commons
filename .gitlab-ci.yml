@@ -1,3 +1,4 @@
+# Auto-tag on main → versioned Maven publish on the tag pipeline.
 # Maven publish to GitLab group Package Registry (data-platform).
 # Auth: CI_JOB_TOKEN (write to this project's packages, visible via group Maven URL).
 # Local/dev: export GITLAB_TOKEN (read_api + read_package_registry) or use group Deploy Token
@@ -9,6 +10,9 @@
 stages: [publish]
 
 include:
+  - project: "data-platform/infrastructure-base"
+    ref: "develop"
+    file: "/ci/templates/tag-release.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
     ref: "main"
     file: "/ci/templates/maven-publish.gitlab-ci.yml"
