@@ -271,12 +271,12 @@ publishing {
 
   repositories {
     maven {
-      name = "github"
-      url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
+      name = "gitlab"
+      url = System.getenv("GITLAB_MAVEN_URL") ?: "https://scm.maze.trading/api/v4/groups/6/-/packages/maven"
 
       credentials {
-        username = System.getenv("GITHUB_USERNAME")
-        password = System.getenv("GITHUB_TOKEN")
+        username = System.getenv("GITLAB_MAVEN_USER") ?: "gitlab-ci-token"
+        password = System.getenv("CI_JOB_TOKEN") ?: System.getenv("GITLAB_MAVEN_PASSWORD") ?: System.getenv("GITLAB_TOKEN")
       }
     }
   }

@@ -1,132 +1,23 @@
+# DISABLED: GitLab Package Registry is the primary Maven publish path
+# (see .gitlab-ci.yml → infrastructure-base ci/templates/maven-publish.gitlab-ci.yml).
+# Kept as workflow_dispatch-only so GitHub Actions does not keep publishing to GitHub Packages.
 name: Publish
 
 on:
-  push:
-    branches:
-      - main
-
-env:
-  JAVA_HOME: "" # INFO: Force JAVA_HOME to be empty, so gradle will use the sdkman java version
-  NODE_VERSION: "22"
-  PYTHON_VERSION: "3.13"
-  SMITHYTRANSLATE_VERSION: "0.5.7"
-  BUF_VERSION: "1.55.1"
-  GITHUB_TOKEN: ${{ github.token }}
-  GITHUB_USERNAME: x-access-token
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Only enable temporarily for emergency GitHub Packages publishes"
+        required: false
+        default: "disabled"
 
 jobs:
-  prepare_tag:
-    name: Setup Tag
+  disabled:
+    name: Disabled (GitLab primary)
     runs-on: ubuntu-latest
-    outputs:
-      VERSION: ${{ steps.bump_version.outputs.new_tag }}
     steps:
-      - uses: actions/checkout@v7
-
-      - name: Bump version and push tag
-        id: bump_version
-        uses: anothrNick/github-tag-action@1.75.0
-        env:
-          DEFAULT_BUMP: patch
-          DRY_RUN: true
-
-  package:
-    name: Package and Publish
-    runs-on: ubuntu-latest
-    needs: [prepare_tag]
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: true
-
-      - name: Cache SDKMAN
-        uses: actions/cache@v6
-        with:
-          path: ~/.sdkman
-          key: sdkman-${{ runner.os }}-${{ hashFiles('.sdkmanrc') }}
-
-      - name: Install SDKMAN
-        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
-
-      # INFO: Tell Gradle which JDK to use *regardless* of what happens to JAVA_HOME
-      - name: Point Gradle at the SDKMAN JDK
-        run: echo "JAVA_HOME=$HOME/.sdkman/candidates/java/current" >> $GITHUB_ENV
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-
-      - name: Setup Coursier
-        uses: coursier/setup-action@v3
-
-      - name: Setup SmithyTranslate
-        run: cs install --channel https://disneystreaming.github.io/coursier.json smithytranslate:${{ env.SMITHYTRANSLATE_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup Buf
-        run: npm install -g @bufbuild/buf@${{ env.BUF_VERSION }}
-
-      - name: Setup Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Build with Makefile
-        run: make build
-
-      - name: Publish library ${{ needs.prepare_tag.outputs.VERSION }}
-        env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: ./gradlew -Pversion=${{ needs.prepare_tag.outputs.VERSION }} publish
-
-  release:
-    name: Release ${{ needs.prepare_tag.outputs.VERSION }}
-    runs-on: ubuntu-latest
-    needs: [prepare_tag, package]
-    permissions:
-      contents: write
-    steps:
-      - name: Create Tag
-        uses: actions/github-script@v9
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/${{ needs.prepare_tag.outputs.VERSION }}",
-              sha: context.sha
-            })
-
-      - name: Checkout repository
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Build Changelog
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@v6
-
-      - name: Create Release
-        uses: actions/github-script@v9
-        env:
-          RELEASE_BODY: ${{ steps.build_changelog.outputs.CHANGELOG }}
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            const changelog = process.env.RELEASE_BODY;
-            github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: "${{ needs.prepare_tag.outputs.VERSION }}",
-              name: "${{ needs.prepare_tag.outputs.VERSION }}",
-              body: changelog,
-              generate_release_notes: true
-            })
+      - name: Skip
+        run: |
+          echo "Maven publish runs on GitLab CI → group Package Registry"
+          echo "Re-enable this workflow only for emergency GitHub Packages publishes."
+          exit 0
