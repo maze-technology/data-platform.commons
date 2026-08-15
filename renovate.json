@@ -1,6 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "automerge": true,
   "automergeType": "pr",
   "gradle": {
@@ -8,16 +10,26 @@
   },
   "packageRules": [
     {
-      "matchManagers": ["github-actions"],
+      "matchManagers": [
+        "github-actions"
+      ],
       "groupName": "GitHub Actions",
-      "reviewers": ["maze-technology/infrastructure-engineers"]
+      "reviewers": [
+        "engineers/infrastructure-engineers"
+      ]
     },
     {
-      "matchManagers": ["gradle"],
+      "matchManagers": [
+        "gradle"
+      ],
       "groupName": "Gradle",
-      "reviewers": ["maze-technology/engineers"]
+      "reviewers": [
+        "engineers"
+      ]
     }
   ],
   "dependencyDashboard": true,
-  "configMigration": true
+  "configMigration": true,
+  "reviewersFromCodeOwners": true,
+  "expandCodeOwnersGroups": true
 }
