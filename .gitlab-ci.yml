@@ -7,14 +7,23 @@
 # Note: CI_JOB_TOKEN inbound allowlists may be required for cross-project reads with job tokens;
 # group CI vars GITLAB_MAVEN_* (Deploy Token) are the preferred read path for consumers/templates.
 
-stages: [publish]
+stages: [test, publish]
 
 include:
   - project: "data-platform/infrastructure-base"
     ref: "develop"
+    file: "/ci/templates/smithy-fmt.gitlab-ci.yml"
+  - project: "data-platform/infrastructure-base"
+    ref: "develop"
+    file: "/ci/templates/java-build.gitlab-ci.yml"
+    inputs:
+      job_image: eclipse-temurin:21-jdk
+      build_script: "./gradlew build"
+  - project: "data-platform/infrastructure-base"
+    ref: "develop"
     file: "/ci/templates/tag-release.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "main"
+    ref: "develop"
     file: "/ci/templates/maven-publish.gitlab-ci.yml"
     inputs:
       job_image: eclipse-temurin:21-jdk
