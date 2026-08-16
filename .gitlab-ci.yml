@@ -11,22 +11,22 @@ stages: [test, publish]
 
 include:
   - project: "data-platform/infrastructure-base"
-    ref: "develop"
+    ref: "v0.1.48"
     file: "/ci/templates/smithy-fmt.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "develop"
+    ref: "v0.1.48"
     file: "/ci/templates/java-build.gitlab-ci.yml"
     inputs:
       job_image: eclipse-temurin:21-jdk
       build_script: "./gradlew build"
   - project: "data-platform/infrastructure-base"
-    ref: "develop"
+    ref: "v0.1.48"
     file: "/ci/templates/tag-release.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "develop"
+    ref: "v0.1.48"
     file: "/ci/templates/release-approval.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "develop"
+    ref: "v0.1.48"
     file: "/ci/templates/maven-publish.gitlab-ci.yml"
     inputs:
       job_image: eclipse-temurin:21-jdk
