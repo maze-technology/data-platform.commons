@@ -14,6 +14,7 @@ import com.google.protobuf.StringValue;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.net.URI;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -80,6 +81,50 @@ class EventSenderTest {
 
     assertThrows(IllegalArgumentException.class, () -> sender.send(" ", StringValue.of("hi")));
     assertThrows(IllegalArgumentException.class, () -> sender.send("topic", null));
+  }
+
+  @Test
+  void sendWithExplicitTypeAndExtensions() {
+    StreamBridge streamBridge = Mockito.mock(StreamBridge.class);
+    when(streamBridge.send(eq("markets.fetch.request"), any(CloudEvent.class))).thenReturn(true);
+
+    EventSender sender = new EventSender(
+        streamBridge,
+        eventProperties(),
+        RetryTemplate.builder().maxAttempts(1).build()
+    );
+
+    boolean sent = sender.send(
+        "markets.fetch.request",
+        StringValue.of("fetch"),
+        "tech.maze.markets.fetch.request",
+        Map.of(
+            EventSender.CORRELATION_ID_EXTENSION, "corr-1",
+            EventSender.REPLY_TO_EXTENSION, "markets.fetch.response"
+        )
+    );
+
+    assertTrue(sent);
+    verify(streamBridge).send(eq("markets.fetch.request"), any(CloudEvent.class));
+  }
+
+  @Test
+  void resolvesCorrelationIdWhenPresent() {
+    EventSender sender = new EventSender(
+        Mockito.mock(StreamBridge.class),
+        eventProperties(),
+        RetryTemplate.builder().maxAttempts(1).build()
+    );
+
+    CloudEvent event = CloudEventBuilder.v1()
+        .withId("id")
+        .withSource(URI.create("urn:test"))
+        .withType("type")
+        .withExtension(EventSender.CORRELATION_ID_EXTENSION, "corr-42")
+        .build();
+
+    assertEquals("corr-42", sender.resolveCorrelationId(event));
+    assertNull(sender.resolveCorrelationId(null));
   }
 
   private MazeEventProperties eventProperties() {
