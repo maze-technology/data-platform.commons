@@ -11,22 +11,25 @@ stages: [test, publish]
 
 include:
   - project: "data-platform/infrastructure-base"
-    ref: "v0.1.48"
+    ref: "v0.2.20"
     file: "/ci/templates/smithy-fmt.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "v0.1.48"
+    ref: "v0.2.20"
     file: "/ci/templates/java-build.gitlab-ci.yml"
     inputs:
       job_image: eclipse-temurin:21-jdk
-      build_script: "./gradlew build"
+      build_script: "make build"
+      install_smithy_tools: "true"
   - project: "data-platform/infrastructure-base"
-    ref: "v0.1.48"
+    ref: "v0.2.20"
     file: "/ci/templates/tag-release.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "v0.1.48"
+    ref: "v0.2.20"
     file: "/ci/templates/release-approval.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "v0.1.48"
+    ref: "v0.2.20"
     file: "/ci/templates/maven-publish.gitlab-ci.yml"
     inputs:
       job_image: eclipse-temurin:21-jdk
+      install_smithy_tools: "true"
+      pre_publish: "make pre-build"
