@@ -15,22 +15,22 @@ stages: [validate, test, publish]
 
 include:
   - project: "data-platform/infrastructure-base"
-    ref: "v0.2.20"
+    ref: "v0.2.25"
     file: "/ci/templates/smithy-fmt.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "v0.2.20"
+    ref: "v0.2.25"
     file: "/ci/templates/java-build.gitlab-ci.yml"
     inputs:
       build_script: "make build"
       install_smithy_tools: "true"
   - project: "data-platform/infrastructure-base"
-    ref: "v0.2.20"
+    ref: "v0.2.25"
     file: "/ci/templates/tag-release.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "v0.2.20"
+    ref: "v0.2.25"
     file: "/ci/templates/release-approval.gitlab-ci.yml"
   - project: "data-platform/infrastructure-base"
-    ref: "v0.2.20"
+    ref: "v0.2.25"
     file: "/ci/templates/maven-publish.gitlab-ci.yml"
     inputs:
       install_smithy_tools: "true"
