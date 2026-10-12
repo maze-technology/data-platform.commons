@@ -2,8 +2,6 @@
 
 This repository contains the commons elements and generates the corresponding libraries
 
-[![Continuous Integration (CI)](https://github.com/maze-technology/commons/actions/workflows/build-scan.yaml/badge.svg?branch=main)](https://github.com/maze-technology/commons/actions/workflows/build-scan.yaml)
-
 ## Quality
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
