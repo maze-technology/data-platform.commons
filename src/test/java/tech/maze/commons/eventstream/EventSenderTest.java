@@ -22,25 +22,6 @@ import org.springframework.retry.support.RetryTemplate;
 
 class EventSenderTest {
   @Test
-  void resolvesReplyToWhenPresent() {
-    EventSender sender = new EventSender(
-        Mockito.mock(StreamBridge.class),
-        eventProperties(),
-        RetryTemplate.builder().maxAttempts(1).build()
-    );
-
-    CloudEvent event = CloudEventBuilder.v1()
-        .withId("id")
-        .withSource(URI.create("urn:test"))
-        .withType("type")
-        .withExtension(EventSender.REPLY_TO_EXTENSION, "queue")
-        .build();
-
-    assertEquals("queue", sender.resolveReplyTo(event));
-    assertNull(sender.resolveReplyTo(null));
-  }
-
-  @Test
   void sendPublishesEvent() {
     StreamBridge streamBridge = Mockito.mock(StreamBridge.class);
     when(streamBridge.send(eq("topic"), any(CloudEvent.class))).thenReturn(true);
@@ -98,10 +79,7 @@ class EventSenderTest {
         "markets.fetch.request",
         StringValue.of("fetch"),
         "tech.maze.markets.fetch.request",
-        Map.of(
-            EventSender.CORRELATION_ID_EXTENSION, "corr-1",
-            EventSender.REPLY_TO_EXTENSION, "markets.fetch.response"
-        )
+        Map.of(EventSender.CORRELATION_ID_EXTENSION, "corr-1")
     );
 
     assertTrue(sent);
