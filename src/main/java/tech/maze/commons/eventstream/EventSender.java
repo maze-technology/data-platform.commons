@@ -28,7 +28,6 @@ import org.springframework.stereotype.Component;
     justification = "Spring-managed dependencies are safe to store in fields."
 )
 public class EventSender {
-  public static final String REPLY_TO_EXTENSION = "replyto";
   public static final String CORRELATION_ID_EXTENSION = "correlationid";
 
   StreamBridge streamBridge;
@@ -50,16 +49,6 @@ public class EventSender {
     this.streamBridge = streamBridge;
     this.eventProperties = eventProperties;
     this.retryTemplate = retryTemplate;
-  }
-
-  /**
-   * Resolves the reply-to destination from an incoming CloudEvent.
-   *
-   * @param requestEvent the incoming request event
-   * @return the reply-to destination or null when not present
-   */
-  public String resolveReplyTo(CloudEvent requestEvent) {
-    return getExtensionAsString(requestEvent, REPLY_TO_EXTENSION);
   }
 
   /**
@@ -104,7 +93,7 @@ public class EventSender {
    * @param destination the target destination (e.g., Kafka topic)
    * @param message the protobuf payload
    * @param eventType CloudEvents type
-   * @param extensions CloudEvents extensions (replyto, correlationid, ...)
+   * @param extensions CloudEvents extensions (e.g. correlationid)
    * @return true if the event was sent, false otherwise
    */
   public boolean send(
