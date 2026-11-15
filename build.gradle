@@ -33,13 +33,12 @@ repositories {
   mavenCentral()
   gradlePluginPortal()
 
+  // milestone only: anonymous /release downloads return 401 and abort Gradle
+  // resolution (Jan 2023). Releases/milestones for Boot 4+ are on Maven Central.
   maven {
     url = "https://repo.spring.io/milestone"
   }
 
-  maven {
-    url = "https://repo.spring.io/release"
-  }
 }
 
 dependencyManagement {
